@@ -6,7 +6,7 @@ import plotly.express as px
 
 # Configurar la página
 st.set_page_config(page_title="Dashboard Caballos Criollos", layout="wide")
-st.title("🐎 Dashboard de Caballos Criollos Colombianos de Paso")
+st.title("\U0001F40E Dashboard de Caballos Criollos Colombianos de Paso")
 st.markdown("### Fundación de Criadores de Caballos de Paso de Puerto Rico")
 
 # Listado de nombres de caballos con género asociado
@@ -16,9 +16,7 @@ nombres_machos = ["Relámpago", "Tormenta", "Lucero", "Centella", "Huracán", "D
 nombres_hembras = ["Brisa", "Luna", "Estrella", "Encantadora", "Bireina", "Bohemia", "Mágica", "Dulce Sueño"]
 
 # Listado de ciudades de Puerto Rico con exposiciones de caballos
-ciudades_puerto_rico = [
-    "San Juan", "Ponce", "Bayamón", "Carolina", "Mayagüez"
-]
+ciudades_puerto_rico = ["San Juan", "Ponce", "Bayamón", "Carolina", "Mayagüez"]
 
 # Modalidades de competencia
 modalidades = ["P1 Trote y Galope", "P2 Trocha y Galope", "P3 Trocha", "P4 Paso Fino"]
@@ -77,6 +75,24 @@ total_caballos = len(df_filtrado)
 st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
 st.dataframe(df_filtrado)
 
+# Gráfico de Barras - Distribución por Sexo
+fig_sexo = px.bar(df_filtrado["Sexo"].value_counts().reset_index(), x="index", y="Sexo",
+                  labels={"index": "Sexo", "Sexo": "Cantidad"}, title="Distribución de Caballos por Sexo")
+st.plotly_chart(fig_sexo)
+
+# Gráfico de Pie - Distribución por Modalidad
+fig_modalidad = px.pie(df_filtrado, names="Modalidad", title="Distribución de Modalidades")
+st.plotly_chart(fig_modalidad)
+
+# Histograma de Edades
+fig_edad = px.histogram(df_filtrado, x="Edad (meses)", nbins=20, title="Distribución de Edades")
+st.plotly_chart(fig_edad)
+
+# Línea de Tiempo - Registros de Caballos por Fecha
+df_filtrado_fecha = df_filtrado.groupby("Fecha").size().reset_index(name="Cantidad")
+fig_tiempo = px.line(df_filtrado_fecha, x="Fecha", y="Cantidad", title="Tendencia de Registros a lo Largo del Tiempo")
+st.plotly_chart(fig_tiempo)
+
 # Análisis
 st.subheader("🏆 Caballo o Yegua con Mayor Puntaje")
 top_caballo = df_filtrado.loc[df_filtrado["Puntaje"].idxmax()]
@@ -89,12 +105,3 @@ st.write(f"Ciudad: {ciudad_mas_registros}")
 st.subheader("📊 Modalidad con Mayor Participación")
 modalidad_mas_registros = df_filtrado["Modalidad"].value_counts().idxmax()
 st.write(f"Modalidad: {modalidad_mas_registros}")
-
-# Filtro por modalidad y ciudad
-st.sidebar.subheader("📌 Filtrar Caballos por Modalidad y Ciudad")
-modalidad_filtro = st.sidebar.selectbox("Seleccionar Modalidad", modalidades)
-ciudad_filtro = st.sidebar.selectbox("Seleccionar Ciudad", ciudades_puerto_rico)
-df_filtrado_modalidad_ciudad = df_filtrado[(df_filtrado["Modalidad"] == modalidad_filtro) & (df_filtrado["Ciudad"] == ciudad_filtro)]
-
-st.markdown(f"### Caballos en {ciudad_filtro} - Modalidad {modalidad_filtro}")
-st.dataframe(df_filtrado_modalidad_ciudad)
