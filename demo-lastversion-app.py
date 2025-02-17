@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 import plotly.express as px
 
 # Configurar la página
-st.set_page_config(page_title="Dashboard Caballos Criollos", layout="wide")
-st.title("\U0001F40E Dashboard de Caballos Criollos Colombianos de Paso")
+st.set_page_config(page_title="Dashboard Caballos  de Paso", layout="wide")
+st.title("\U0001F40E Dashboard de Caballos de Paso")
 st.markdown("### Fundación de Criadores de Caballos de Paso de Puerto Rico")
 
 # Botón para resetear la aplicación
@@ -82,12 +82,12 @@ st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
 st.dataframe(df_filtrado)
 
 # Filtros adicionales
-st.subheader("🏆 Caballo o Yegua con Mayor Puntaje")
+st.subheader("🏆 Ejemplar con Mayor Puntaje")
 if not df_filtrado.empty:
     mejor_caballo = df_filtrado.loc[df_filtrado["Puntaje"].idxmax()]
     st.write(mejor_caballo)
 
-st.subheader("📊 Caballo o Yegua con Más Participaciones")
+st.subheader("📊 Ejemplar con Más Participaciones")
 if not df_filtrado.empty:
     mas_participaciones = df_filtrado["Nombre"].value_counts().idxmax()
     st.write(f"Nombre: {mas_participaciones}")
