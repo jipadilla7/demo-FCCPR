@@ -65,8 +65,6 @@ ciudad_seleccionada = st.sidebar.multiselect("Seleccionar ciudad", ciudades_puer
 fecha_inicio, fecha_fin = st.sidebar.date_input("Seleccionar rango de fechas", [datetime.today() - timedelta(days=5*365), datetime.today()])
 puntaje_min, puntaje_max = st.sidebar.slider("Filtrar por puntaje", 2, 20, (2, 20))
 
-tipo_grafico = st.sidebar.selectbox("Seleccionar tipo de gráfico", ["Barras", "Pastel", "Histograma"])
-
 # Aplicar filtros
 df["Fecha"] = pd.to_datetime(df["Fecha"])
 df_filtrado = df[(df["Modalidad"].isin(modalidad_seleccionada)) &
@@ -81,32 +79,24 @@ total_caballos = len(df_filtrado)
 st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
 st.dataframe(df_filtrado)
 
-# Generación de gráficos
-variables_numericas = ["Edad (meses)", "Puntaje"]
-variables_categoricas = ["Sexo", "Modalidad", "Ciudad", "Grado"]
-variable_seleccionada = st.sidebar.selectbox("Seleccionar variable para graficar", variables_numericas + variables_categoricas)
-
-df_variable = df_filtrado[variable_seleccionada].value_counts().reset_index()
-df_variable.columns = [variable_seleccionada, "count"]
-
+# Filtros adicionales
+st.subheader("🏆 Caballo o Yegua con Mayor Puntaje")
 if not df_filtrado.empty:
-    if tipo_grafico == "Barras":
-        fig = px.bar(df_variable, x=variable_seleccionada, y="count", labels={variable_seleccionada: variable_seleccionada, "count": "Cantidad"}, title=f"Distribución de {variable_seleccionada}")
-    elif tipo_grafico == "Pastel":
-        fig = px.pie(df_variable, names=variable_seleccionada, values="count", title=f"Distribución de {variable_seleccionada}")
-    else:
-        fig = px.histogram(df_filtrado, x=variable_seleccionada, nbins=20, title=f"Distribución de {variable_seleccionada}")
-    st.plotly_chart(fig)
-else:
-    st.warning("No hay datos disponibles para generar el gráfico.")
+    mejor_caballo = df_filtrado.loc[df_filtrado["Puntaje"].idxmax()]
+    st.write(mejor_caballo)
 
+st.subheader("📊 Caballo o Yegua con Más Participaciones")
+if not df_filtrado.empty:
+    mas_participaciones = df_filtrado["Nombre"].value_counts().idxmax()
+    st.write(f"Nombre: {mas_participaciones}")
+
+st.subheader("📌 Modalidad con Mayor Número de Caballos")
+if not df_filtrado.empty:
+    modalidad_mayor = df_filtrado["Modalidad"].value_counts().idxmax()
+    st.write(f"Modalidad: {modalidad_mayor}")
 
 # Información de contacto
 st.subheader("📌 Conéctate con nosotros")
 st.markdown("**Instagram:** [@orcas_analytics](https://www.instagram.com/orcas_analytics)")
 st.markdown("**Twitter (X):** [@orcas_analytics](https://twitter.com/orcas_analytics)")
 st.markdown("✉️ **Correo Electrónico:** jorge.padilla@orcas.com.co")
-
-
-
-
