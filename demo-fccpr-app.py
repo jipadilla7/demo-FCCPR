@@ -17,7 +17,7 @@ nombres_hembras = ["Brisa", "Luna", "Estrella", "Encantadora", "Bireina", "Bohem
 
 # Listado de ciudades de Puerto Rico con exposiciones de caballos
 ciudades_puerto_rico = [
-    "San Juan", "Ponce", "Bayamón", "Carolina", "Arecibo", "Mayagüez", "Caguas", "Guaynabo", "Humacao", "Fajardo"
+    "San Juan", "Ponce", "Bayamón", "Carolina", "Mayagüez"
 ]
 
 # Modalidades de competencia
