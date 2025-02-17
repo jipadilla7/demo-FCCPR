@@ -76,32 +76,9 @@ st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
 st.dataframe(df_filtrado)
 
 # Gráfico de Barras - Distribución por Sexo
-fig_sexo = px.bar(df_filtrado["Sexo"].value_counts().reset_index(), x="index", y="Sexo",
-                  labels={"index": "Sexo", "Sexo": "Cantidad"}, title="Distribución de Caballos por Sexo")
-st.plotly_chart(fig_sexo)
-
-# Gráfico de Pie - Distribución por Modalidad
-fig_modalidad = px.pie(df_filtrado, names="Modalidad", title="Distribución de Modalidades")
-st.plotly_chart(fig_modalidad)
-
-# Histograma de Edades
-fig_edad = px.histogram(df_filtrado, x="Edad (meses)", nbins=20, title="Distribución de Edades")
-st.plotly_chart(fig_edad)
-
-# Línea de Tiempo - Registros de Caballos por Fecha
-df_filtrado_fecha = df_filtrado.groupby("Fecha").size().reset_index(name="Cantidad")
-fig_tiempo = px.line(df_filtrado_fecha, x="Fecha", y="Cantidad", title="Tendencia de Registros a lo Largo del Tiempo")
-st.plotly_chart(fig_tiempo)
-
-# Análisis
-st.subheader("🏆 Caballo o Yegua con Mayor Puntaje")
-top_caballo = df_filtrado.loc[df_filtrado["Puntaje"].idxmax()]
-st.write(top_caballo)
-
-st.subheader("📍 Ciudad con Mayor Número de Caballos Registrados")
-ciudad_mas_registros = df_filtrado["Ciudad"].value_counts().idxmax()
-st.write(f"Ciudad: {ciudad_mas_registros}")
-
-st.subheader("📊 Modalidad con Mayor Participación")
-modalidad_mas_registros = df_filtrado["Modalidad"].value_counts().idxmax()
-st.write(f"Modalidad: {modalidad_mas_registros}")
+if not df_filtrado.empty:
+    fig_sexo = px.bar(df_filtrado["Sexo"].value_counts().reset_index(), x="index", y="Sexo",
+                      labels={"index": "Sexo", "Sexo": "Cantidad"}, title="Distribución de Caballos por Sexo")
+    st.plotly_chart(fig_sexo)
+else:
+    st.warning("No hay datos disponibles para generar el gráfico de distribución por sexo.")
