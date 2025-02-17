@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import random
 from datetime import datetime, timedelta
+import plotly.express as px
 
 # Configurar la página
 st.set_page_config(page_title="Dashboard Caballos Criollos", layout="wide")
