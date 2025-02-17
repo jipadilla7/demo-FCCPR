@@ -74,6 +74,29 @@ df_filtrado = df[(df["Modalidad"].isin(modalidad_seleccionada)) &
                  (df["Fecha"].between(pd.Timestamp(fecha_inicio), pd.Timestamp(fecha_fin))) &
                  (df["Puntaje"].between(puntaje_min, puntaje_max))]
 
+
+
+# Mostrar tabla
+total_caballos = len(df_filtrado)
+st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
+st.dataframe(df_filtrado)
+
+# Filtros adicionales
+st.subheader("🏆 Caballo o Yegua con Mayor Puntaje")
+if not df_filtrado.empty:
+    mejor_caballo = df_filtrado.loc[df_filtrado["Puntaje"].idxmax()]
+    st.write(mejor_caballo)
+
+st.subheader("📊 Caballo o Yegua con Más Participaciones")
+if not df_filtrado.empty:
+    mas_participaciones = df_filtrado["Nombre"].value_counts().idxmax()
+    st.write(f"Nombre: {mas_participaciones}")
+
+st.subheader("📌 Modalidad con Mayor Número de Caballos")
+if not df_filtrado.empty:
+    modalidad_mayor = df_filtrado["Modalidad"].value_counts().idxmax()
+    st.write(f"Modalidad: {modalidad_mayor}")
+
 # Mostrar gráficos
 st.subheader("📊 Distribuciones de Datos")
 if not df_filtrado.empty:
