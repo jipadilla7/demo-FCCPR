@@ -56,6 +56,27 @@ def generar_datos(num_registros):
 num_registros = st.sidebar.slider("Número de registros a generar", min_value=50, max_value=500, value=200)
 df = generar_datos(num_registros)
 
+# Mostrar tabla
+total_caballos = len(df_filtrado)
+st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
+st.dataframe(df_filtrado)
+
+# Filtros adicionales
+st.subheader("🏆 Caballo o Yegua con Mayor Puntaje")
+if not df_filtrado.empty:
+    mejor_caballo = df_filtrado.loc[df_filtrado["Puntaje"].idxmax()]
+    st.write(mejor_caballo)
+
+st.subheader("📊 Caballo o Yegua con Más Participaciones")
+if not df_filtrado.empty:
+    mas_participaciones = df_filtrado["Nombre"].value_counts().idxmax()
+    st.write(f"Nombre: {mas_participaciones}")
+
+st.subheader("📌 Modalidad con Mayor Número de Caballos")
+if not df_filtrado.empty:
+    modalidad_mayor = df_filtrado["Modalidad"].value_counts().idxmax()
+    st.write(f"Modalidad: {modalidad_mayor}")
+
 # Panel de Filtros
 st.sidebar.header("Filtros Avanzados")
 modalidad_seleccionada = st.sidebar.multiselect("Seleccionar modalidad", modalidades, default=modalidades)
