@@ -9,6 +9,10 @@ st.set_page_config(page_title="Dashboard Caballos Criollos", layout="wide")
 st.title("\U0001F40E Dashboard de Caballos Criollos Colombianos de Paso")
 st.markdown("### Fundación de Criadores de Caballos de Paso de Puerto Rico")
 
+# Botón para resetear la aplicación
+if st.sidebar.button("🔄 Resetear Página"):
+    st.experimental_rerun()
+
 # Listado de nombres de caballos con género asociado
 nombres_machos = ["Relámpago", "Tormenta", "Lucero", "Centella", "Huracán", "Destello", "Sombra", "Fuego",
                    "Rayo", "Viento", "Sol", "Corcel", "Trueno", "Águila", "Pegaso", "Olimpo", "Titan",
@@ -61,6 +65,8 @@ ciudad_seleccionada = st.sidebar.multiselect("Seleccionar ciudad", ciudades_puer
 fecha_inicio, fecha_fin = st.sidebar.date_input("Seleccionar rango de fechas", [datetime.today() - timedelta(days=5*365), datetime.today()])
 puntaje_min, puntaje_max = st.sidebar.slider("Filtrar por puntaje", 2, 20, (2, 20))
 
+tipo_grafico = st.sidebar.selectbox("Seleccionar tipo de gráfico", ["Barras", "Pastel", "Histograma"])
+
 # Aplicar filtros
 df["Fecha"] = pd.to_datetime(df["Fecha"])
 df_filtrado = df[(df["Modalidad"].isin(modalidad_seleccionada)) &
@@ -75,12 +81,17 @@ total_caballos = len(df_filtrado)
 st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
 st.dataframe(df_filtrado)
 
-# Gráfico de Barras - Distribución por Sexo
+# Generación de gráficos
+df_sexo = df_filtrado["Sexo"].value_counts().reset_index()
+df_sexo.columns = ["Sexo", "count"]
+
 if not df_filtrado.empty:
-    df_sexo = df_filtrado["Sexo"].value_counts().reset_index()
-    df_sexo.columns = ["Sexo", "count"]
-    fig_sexo = px.bar(df_sexo, x="Sexo", y="count",
-                      labels={"Sexo": "Sexo", "count": "Cantidad"}, title="Distribución de Caballos por Sexo")
-    st.plotly_chart(fig_sexo)
+    if tipo_grafico == "Barras":
+        fig = px.bar(df_sexo, x="Sexo", y="count", labels={"Sexo": "Sexo", "count": "Cantidad"}, title="Distribución de Caballos por Sexo")
+    elif tipo_grafico == "Pastel":
+        fig = px.pie(df_sexo, names="Sexo", values="count", title="Distribución de Caballos por Sexo")
+    else:
+        fig = px.histogram(df_filtrado, x="Edad (meses)", nbins=20, title="Distribución de Edades")
+    st.plotly_chart(fig)
 else:
-    st.warning("No hay datos disponibles para generar el gráfico de distribución por sexo.")
+    st.warning("No hay datos disponibles para generar el gráfico.")
