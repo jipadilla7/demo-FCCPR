@@ -76,6 +76,21 @@ df_filtrado = df[(df["Modalidad"].isin(modalidad_seleccionada)) &
                  (df["Fecha"].between(pd.Timestamp(fecha_inicio), pd.Timestamp(fecha_fin))) &
                  (df["Puntaje"].between(puntaje_min, puntaje_max))]
 
+# Opción de visualización de gráficos
+tipo_grafico = st.selectbox("Seleccionar tipo de gráfico", ["Barras", "Torta", "Histograma"])
+
+if not df_filtrado.empty:
+    if tipo_grafico == "Barras":
+        fig = px.bar(df_filtrado, x="Modalidad", y="Puntaje", text_auto=True)
+    elif tipo_grafico == "Torta":
+        fig = px.pie(df_filtrado, names="Ciudad")
+    elif tipo_grafico == "Histograma":
+        fig = px.histogram(df_filtrado, x="Edad (meses)")
+
+    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.warning("No hay datos disponibles para los filtros seleccionados.")
+
 
 
 
