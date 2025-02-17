@@ -11,7 +11,7 @@ st.markdown("### Fundación de Criadores de Caballos de Paso de Puerto Rico")
 
 # Botón para resetear la aplicación
 if st.sidebar.button("🔄 Resetear Página"):
-    st.experimental_rerun()
+    st.experimental_set_query_params()
 
 # Listado de nombres de caballos con género asociado
 nombres_machos = ["Relámpago", "Tormenta", "Lucero", "Centella", "Huracán", "Destello", "Sombra", "Fuego",
@@ -82,16 +82,20 @@ st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
 st.dataframe(df_filtrado)
 
 # Generación de gráficos
-df_sexo = df_filtrado["Sexo"].value_counts().reset_index()
-df_sexo.columns = ["Sexo", "count"]
+variables_numericas = ["Edad (meses)", "Puntaje"]
+variables_categoricas = ["Sexo", "Modalidad", "Ciudad", "Grado"]
+variable_seleccionada = st.sidebar.selectbox("Seleccionar variable para graficar", variables_numericas + variables_categoricas)
+
+df_variable = df_filtrado[variable_seleccionada].value_counts().reset_index()
+df_variable.columns = [variable_seleccionada, "count"]
 
 if not df_filtrado.empty:
     if tipo_grafico == "Barras":
-        fig = px.bar(df_sexo, x="Sexo", y="count", labels={"Sexo": "Sexo", "count": "Cantidad"}, title="Distribución de Caballos por Sexo")
+        fig = px.bar(df_variable, x=variable_seleccionada, y="count", labels={variable_seleccionada: variable_seleccionada, "count": "Cantidad"}, title=f"Distribución de {variable_seleccionada}")
     elif tipo_grafico == "Pastel":
-        fig = px.pie(df_sexo, names="Sexo", values="count", title="Distribución de Caballos por Sexo")
+        fig = px.pie(df_variable, names=variable_seleccionada, values="count", title=f"Distribución de {variable_seleccionada}")
     else:
-        fig = px.histogram(df_filtrado, x="Edad (meses)", nbins=20, title="Distribución de Edades")
+        fig = px.histogram(df_filtrado, x=variable_seleccionada, nbins=20, title=f"Distribución de {variable_seleccionada}")
     st.plotly_chart(fig)
 else:
     st.warning("No hay datos disponibles para generar el gráfico.")
