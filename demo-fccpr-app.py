@@ -77,8 +77,10 @@ st.dataframe(df_filtrado)
 
 # Gráfico de Barras - Distribución por Sexo
 if not df_filtrado.empty:
-    fig_sexo = px.bar(df_filtrado["Sexo"].value_counts().reset_index(), x="index", y="Sexo",
-                      labels={"index": "Sexo", "Sexo": "Cantidad"}, title="Distribución de Caballos por Sexo")
+    df_sexo = df_filtrado["Sexo"].value_counts().reset_index()
+    df_sexo.columns = ["Sexo", "count"]
+    fig_sexo = px.bar(df_sexo, x="Sexo", y="count",
+                      labels={"Sexo": "Sexo", "count": "Cantidad"}, title="Distribución de Caballos por Sexo")
     st.plotly_chart(fig_sexo)
 else:
     st.warning("No hay datos disponibles para generar el gráfico de distribución por sexo.")
