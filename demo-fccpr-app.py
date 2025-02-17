@@ -55,12 +55,8 @@ def generar_datos(num_registros):
 num_registros = st.sidebar.slider("Número de registros a generar", min_value=50, max_value=500, value=200)
 df = generar_datos(num_registros)
 
-# Mostrar tabla
-total_caballos = len(df)
-st.markdown(f"### Datos Seleccionados ({total_caballos} registros)")
-st.dataframe(df)
-
-# Filtros
+# Panel de Filtros
+st.sidebar.header("Filtros Avanzados")
 modalidad_seleccionada = st.sidebar.multiselect("Seleccionar modalidad", modalidades, default=modalidades)
 edad_min, edad_max = st.sidebar.slider("Rango de edad (meses)", 36, 120, (36, 120))
 sexo_seleccionado = st.sidebar.multiselect("Seleccionar sexo", ["Macho", "Hembra"], default=["Macho", "Hembra"])
@@ -77,22 +73,29 @@ df_filtrado = df[(df["Modalidad"].isin(modalidad_seleccionada)) &
                  (df["Fecha"].between(pd.Timestamp(fecha_inicio), pd.Timestamp(fecha_fin))) &
                  (df["Puntaje"].between(puntaje_min, puntaje_max))]
 
-# Opción de visualización de gráficos
-tipo_grafico = st.selectbox("Seleccionar tipo de gráfico", ["Barras", "Torta", "Histograma"])
+# Mostrar tabla
+total_caballos = len(df_filtrado)
+st.markdown(f"### Datos Filtrados ({total_caballos} registros)")
+st.dataframe(df_filtrado)
 
-if not df_filtrado.empty:
-    if tipo_grafico == "Barras":
-        fig = px.bar(df_filtrado, x="Modalidad", y="Puntaje", text_auto=True)
-    elif tipo_grafico == "Torta":
-        fig = px.pie(df_filtrado, names="Ciudad")
-    elif tipo_grafico == "Histograma":
-        fig = px.histogram(df_filtrado, x="Edad (meses)")
+# Análisis
+st.subheader("🏆 Caballo o Yegua con Mayor Puntaje")
+top_caballo = df_filtrado.loc[df_filtrado["Puntaje"].idxmax()]
+st.write(top_caballo)
 
-    st.plotly_chart(fig, use_container_width=True)
-else:
-    st.warning("No hay datos disponibles para los filtros seleccionados.")
+st.subheader("📍 Ciudad con Mayor Número de Caballos Registrados")
+ciudad_mas_registros = df_filtrado["Ciudad"].value_counts().idxmax()
+st.write(f"Ciudad: {ciudad_mas_registros}")
 
+st.subheader("📊 Modalidad con Mayor Participación")
+modalidad_mas_registros = df_filtrado["Modalidad"].value_counts().idxmax()
+st.write(f"Modalidad: {modalidad_mas_registros}")
 
+# Filtro por modalidad y ciudad
+st.sidebar.subheader("📌 Filtrar Caballos por Modalidad y Ciudad")
+modalidad_filtro = st.sidebar.selectbox("Seleccionar Modalidad", modalidades)
+ciudad_filtro = st.sidebar.selectbox("Seleccionar Ciudad", ciudades_puerto_rico)
+df_filtrado_modalidad_ciudad = df_filtrado[(df_filtrado["Modalidad"] == modalidad_filtro) & (df_filtrado["Ciudad"] == ciudad_filtro)]
 
-
-
+st.markdown(f"### Caballos en {ciudad_filtro} - Modalidad {modalidad_filtro}")
+st.dataframe(df_filtrado_modalidad_ciudad)
