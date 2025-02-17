@@ -56,7 +56,7 @@ df = generar_datos(num_registros)
 
 # Mostrar tabla
 total_caballos = len(df)
-st.markdown(f"### Datos Generados ({total_caballos} registros)")
+st.markdown(f"### Datos Seleccionados ({total_caballos} registros)")
 st.dataframe(df)
 
 # Filtros
