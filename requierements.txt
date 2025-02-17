@@ -1,0 +1,14 @@
+streamlit
+pandas
+numpy
+matplotlib
+seaborn
+plotly
+altair
+scikit-learn
+python-dateutil
+pendulum
+sqlalchemy
+psycopg2
+mysql-connector-python
+sqlite3
