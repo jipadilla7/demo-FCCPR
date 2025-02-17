@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import random
@@ -6,8 +5,8 @@ from datetime import datetime, timedelta
 import plotly.express as px
 
 # Configurar la página
-st.set_page_config(page_title="Caballos de Paso", layout="wide")
-st.title("🐎 Dashboard de Caballos de Paso en Puerto Rico")
+st.set_page_config(page_title="Dashboard Caballos Criollos", layout="wide")
+st.title("🐎 Dashboard de Caballos Criollos Colombianos de Paso")
 st.markdown("### Fundación de Criadores de Caballos de Paso de Puerto Rico")
 
 # Listado de nombres de caballos
@@ -57,7 +56,7 @@ num_registros = st.sidebar.slider("Número de registros a generar", min_value=50
 df = generar_datos(num_registros)
 
 # Barra de desplazamiento para cantidad de registros a visualizar
-num_ver = st.sidebar.slider("Cantidad de registros a visualizar", min_value=10, max_value=500, value=50)
+num_ver = st.sidebar.slider("Cantidad de registros a visualizar", min_value=10, max_value=num_registros, value=50)
 
 # Filtros
 modalidad_seleccionada = st.sidebar.multiselect("Seleccionar modalidad", modalidades, default=modalidades)
@@ -84,13 +83,16 @@ st.dataframe(df_filtrado.head(num_ver))
 # Opción de visualización de gráficos
 tipo_grafico = st.selectbox("Seleccionar tipo de gráfico", ["Barras", "Torta", "Histograma"])
 
-if tipo_grafico == "Barras":
-    fig = px.bar(df_filtrado, x="Modalidad", y="Puntaje", text_auto=True)
-elif tipo_grafico == "Torta":
-    fig = px.pie(df_filtrado, names="Ciudad")
-elif tipo_grafico == "Histograma":
-    fig = px.histogram(df_filtrado, x="Edad (meses)")
+if not df_filtrado.empty:
+    if tipo_grafico == "Barras":
+        fig = px.bar(df_filtrado, x="Modalidad", y="Puntaje", text_auto=True)
+    elif tipo_grafico == "Torta":
+        fig = px.pie(df_filtrado, names="Ciudad")
+    elif tipo_grafico == "Histograma":
+        fig = px.histogram(df_filtrado, x="Edad (meses)")
 
-st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
+else:
+    st.warning("No hay datos disponibles para los filtros seleccionados.")
 
 st.markdown("#### 🎯 Este dashboard facilita la toma de decisiones sobre competencias, caballos destacados y tendencias de inscripciones en Puerto Rico. ¡Descubre los mejores ejemplares!")
